@@ -2,7 +2,10 @@
 
 Code, data partitions, per-image predictions and summary statistics for the manuscript:
 
-> S. Rahuman, *Beyond the LC25000 benchmark: source-group evaluation, external testing, and a capacity-controlled analysis of lightweight CNN–Transformer models for lung histopathology*(manuscript under review).
+> S. Rahuman, *Beyond the LC25000 benchmark: source-group evaluation, external testing, and a capacity-controlled analysis of lightweight CNN–Transformer models for lung histopathology* (manuscript under review).
+>
+> ORCID: [0000-0002-8612-4068](https://orcid.org/0000-0002-8612-4068)
+
 ## Study design
 
 | | Protocol A (image-level split) | Protocol B (source-group split) |
@@ -27,11 +30,13 @@ notebooks/
   7_TokenMLP_Protocol_A.ipynb                          TokenMLP on the five Protocol A partitions
   8_Example_Images_Figure.ipynb                        example-image figure from the original LC25000 and LungHist700 files
   9_Extended_C_Grid.ipynb                              sensitivity check: extended regularisation grid for the frozen-feature classifiers
+  10_Saliency_Figure_HighRes.ipynb                     saliency figure at full tile resolution from the initial-run models
 splits/
   protocolA_seed42 ... protocolA_seed46/{train,val,test}.csv   filename, label, source group
   protocolB_seed42 ... protocolB_seed46/{train,val,test}.csv
   initial_run_seed42/split_{train,val,test}.csv                 initial run, with MD5 hashes
-results/   (stored as protocolA.zip, protocolB.zip, phikon.zip, imagenet_frozen.zip, initial_run_seed42.zip;
+results/   (stored as protocolA.zip, protocolB.zip, phikon.zip, imagenet_frozen.zip, initial_run_seed42.zip,
+            extended_c_grid.zip, saliency_figure.zip;
             the analysis scripts unpack them automatically on first use)
   protocolA/seed*/<model>/   internal.json, external.json, history.json,
                              test_predictions.csv (per-image internal predictions),
@@ -40,9 +45,11 @@ results/   (stored as protocolA.zip, protocolB.zip, phikon.zip, imagenet_frozen.
   protocolB/seed*/<model>/   as above, plus external_patient_predictions.csv
   phikon/                    protocol{A,B}_seed*.json, *_external_predictions.csv, feature_info.json
   imagenet_frozen/           ViT-B16_ImageNet/ and EfficientNetB0_ImageNet/: protocol{A,B}_seed*.json, *_external_probs.npy, feature_info.json
-  initial_run_seed42/        summary.json, external_summary.json, xai_summary.json, internal predictions
+  initial_run_seed42/        summary.json, external_summary.json, xai_summary.json, history_<model>.json, internal predictions
                              (Table 8 values come from xai_summary.json; the xai fields inside summary.json
                              are from a preliminary analysis and are superseded)
+  extended_c_grid/           notebook 9 output: selected C, validation accuracy per C, internal and external results (30 classifiers)
+  saliency_figure/           notebook 10 output: saliency maps of the figure tiles (saliency_maps.npz) and the tiles used
 data/
   lunghist700_index.csv      LungHist700 image list with patient identifiers and label mapping
 analysis/
@@ -50,6 +57,7 @@ analysis/
                              protocol changes, source-group-clustered permutation tests with Holm correction,
                              patient-bootstrap comparisons, Bonferroni-adjusted Phikon comparisons, ImageNet controls)
   make_result_figures.py     confusion matrices, Protocol A versus B, internal versus external accuracy
+  make_extra_figures.py      training curves and external sensitivity analyses (initial seed-42 run)
   make_study_design.py       study-design figure (run with --tokA)
   make_architecture.py       architecture figure (hybrid model, TokenMLP, EfficientNetB0 baseline)
   make_graphical_abstract.py graphical abstract
@@ -78,6 +86,7 @@ All reported statistics and the result figures can be recomputed from the stored
 pip install -r requirements.txt
 python analysis/reproduce_statistics.py
 python analysis/make_result_figures.py
+python analysis/make_extra_figures.py
 python analysis/make_study_design.py --tokA
 python analysis/make_architecture.py
 python analysis/make_graphical_abstract.py
