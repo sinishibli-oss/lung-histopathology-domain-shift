@@ -1,0 +1,15 @@
+# Analysis scripts (analysis/)
+numpy
+pandas
+scipy
+statsmodels
+matplotlib
+# Training notebooks (Google Colab)
+tensorflow==2.21.0
+keras>=3.0
+scikit-learn
+opencv-python
+kagglehub
+torch==2.11.0
+transformers==5.18.0
+huggingface_hub
