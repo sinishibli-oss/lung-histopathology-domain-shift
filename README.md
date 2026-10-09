@@ -2,7 +2,7 @@
 
 Code, data partitions, per-image predictions and summary statistics for the manuscript:
 
-> S. Rahuman, *Beyond the LC25000 benchmark: source-group evaluation, external testing, and a capacity-controlled analysis of lightweight CNN–Transformer models for lung histopathology
+> S. Rahuman, *Beyond the LC25000 benchmark: source-group evaluation, external testing, and a capacity-controlled analysis of lightweight CNN–Transformer models for lung histopathology*(manuscript under review).
 ## Study design
 
 | | Protocol A (image-level split) | Protocol B (source-group split) |
