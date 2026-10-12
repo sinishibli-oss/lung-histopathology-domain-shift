@@ -16,14 +16,14 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, Rectangle, Circle
 plt.rcParams.update({"font.family": "DejaVu Serif", "pdf.fonttype": 42})
 INK, MUTED, LINE = "#1f2937", "#4b5563", "#4b5563"
-GREY = ("#f3f4f6", "#6b7280"); SLATE = ("#ffffff", "#334155"); KEY = ("#e6f4f1", "#0f766e"); HEAD = ("#f1effa", "#4a3aa7")
+GREY = ("#eef2f6", "#334155"); SLATE = ("#e2e8f0", "#334155"); KEY = ("#c9ece5", "#0b7a6e"); HEAD = ("#e6e0fa", "#5b3cc4"); MLP = ("#d9e6f7", "#1d5fa8"); BB = ("#1d5fa8", "#1d5fa8")
 W, H = 6.85, 4.25
 fig = plt.figure(figsize=(W, H)); ax = fig.add_axes([0, 0, 1, 1]); ax.set_xlim(0, W); ax.set_ylim(0, H); ax.axis("off")
 FS = 7.3
 
 def box(x, y, w, h, txt, pal, sub=None, bold=False, ls="-"):
     fc, ec = pal
-    ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0,rounding_size=0.05", fc=fc, ec=ec, lw=1.0, ls=ls))
+    ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0,rounding_size=0.05", fc=fc, ec=ec, lw=1.3, ls=ls))
     if sub:
         ax.text(x + w / 2, y + h * 0.66, txt, ha="center", va="center", fontsize=FS, color=INK, weight="bold" if bold else "normal")
         ax.text(x + w / 2, y + h * 0.28, sub, ha="center", va="center", fontsize=6.3, color=MUTED)
@@ -39,11 +39,13 @@ def residual(x0, x1, y):                       # dashed skip connection drawn ab
 # ---- shared trunk (top row)
 yt = 3.78
 box(0.55, yt - 0.25, 0.9, 0.5, "Input tile", GREY, "160 × 160 × 3"); arr(1.45, yt, 1.62, yt)
-box(1.62, yt - 0.3, 1.45, 0.6, "EfficientNetB0", GREY, "ImageNet-pretrained · 4.05M", bold=True); arr(3.07, yt, 3.24, yt)
+box(1.62, yt - 0.3, 1.45, 0.6, "", BB)
+ax.text(1.62 + 0.725, yt + 0.1, "EfficientNetB0", ha="center", va="center", fontsize=FS + 0.4, color="white", weight="bold")
+ax.text(1.62 + 0.725, yt - 0.13, "ImageNet-pretrained · 4.05M", ha="center", va="center", fontsize=6.3, color="#e6f0fb"); arr(3.07, yt, 3.24, yt)
 gx, cs = 3.27, 0.105; gy = yt - 2.5 * cs
 for i in range(5):
     for j in range(5):
-        ax.add_patch(Rectangle((gx + j * cs, gy + i * cs), cs, cs, fc="#dbeafe" if (i + j) % 2 else "#bfdbfe", ec="white", lw=0.5))
+        ax.add_patch(Rectangle((gx + j * cs, gy + i * cs), cs, cs, fc="#9cc3ec" if (i + j) % 2 else "#5e9bd8", ec="white", lw=0.5))
 ax.text(gx + 5 * cs + 0.08, yt + 0.09, "5 × 5 × 1280 feature map", ha="left", va="center", fontsize=6.5, color=MUTED)
 ax.text(gx + 5 * cs + 0.08, yt - 0.11, "= 25 tokens of dimension 1280", ha="left", va="center", fontsize=6.5, color=MUTED)
 xsplit = 0.32
@@ -58,7 +60,7 @@ x0 = 0.5; bh = 0.42
 for k, y in rows.items():
     arr(xsplit, y, x0, y)
     ax.text(0.08, y + (0.5 if k != "c" else 0.22), f"({k})", ha="left", va="center", fontsize=7.8, color=INK, weight="bold")
-    ax.text(0.36, y + (0.5 if k != "c" else 0.22), lab[k], ha="left", va="center", fontsize=6.9, color=MUTED, style="italic")
+    ax.text(0.36, y + (0.5 if k != "c" else 0.22), lab[k], ha="left", va="center", fontsize=7.0, color={"a": "#0b7a6e", "b": "#1d5fa8", "c": "#334155"}[k], style="italic", weight="bold")
 LN, AT, MLPW = 0.7, 1.36, 1.0
 # (a)
 y = rows["a"]; x = x0
@@ -68,15 +70,15 @@ box(xa, y - bh / 2 - 0.05, AT, bh + 0.1, "Self-attention", KEY, "2 heads, d$_k$ 
 xp1 = xa + AT + 0.2; arr(xa + AT, y, xp1 - 0.08, y); plus(xp1, y); residual(x - 0.05, xp1, y)
 xl2 = xp1 + 0.18; arr(xp1 + 0.08, y, xl2, y)
 box(xl2, y - bh / 2, LN, bh, "LayerNorm", SLATE); xm = xl2 + LN + 0.1; arr(xl2 + LN, y, xm, y)
-box(xm, y - bh / 2 - 0.05, MLPW, bh + 0.1, "Token MLP", SLATE, "hidden 128 · 329,088")
+box(xm, y - bh / 2 - 0.05, MLPW, bh + 0.1, "Token MLP", MLP, "hidden 128 · 329,088", bold=True)
 xp2 = xm + MLPW + 0.2; arr(xm + MLPW, y, xp2 - 0.08, y); plus(xp2, y); residual(xp1 + 0.1, xp2, y)
 xend = xp2 + 0.08
 # (b)
 y = rows["b"]
 box(x, y - bh / 2, LN, bh, "LayerNorm", SLATE); arr(x + LN, y, xa, y)
-box(xa, y - bh / 2 - 0.05, AT, bh + 0.1, "no token mixing", KEY, "attention removed", ls="--")
+box(xa, y - bh / 2 - 0.05, AT, bh + 0.1, "no token mixing", ("#f3faf8", "#0b7a6e"), "attention removed", ls="--")
 arr(xa + AT, y, xm, y)
-box(xm, y - bh / 2 - 0.05, MLPW, bh + 0.1, "Token MLP", SLATE, "hidden 192 · 492,992")
+box(xm, y - bh / 2 - 0.05, MLPW, bh + 0.1, "Token MLP", MLP, "hidden 192 · 492,992", bold=True)
 arr(xm + MLPW, y, xp2 - 0.08, y); plus(xp2, y); residual(x - 0.05, xp2, y)
 # (c)
 y = rows["c"]
@@ -88,9 +90,9 @@ for y in rows.values():
 arr(xh - 0.12, ym, xh, ym)
 hw = W - 0.08 - xh
 box(xh, ym - 0.95, hw, 1.9, "", HEAD)
-ax.text(xh + hw / 2, ym + 0.66, "Head", ha="center", va="center", fontsize=FS, weight="bold", color=INK)
+ax.text(xh + hw / 2, ym + 0.66, "Head", ha="center", va="center", fontsize=FS + 0.5, weight="bold", color="#5b3cc4")
 for dy, t in [(0.3, "global average\npooling"), (-0.08, "dropout 0.3"), (-0.45, "dense + softmax\n3 classes · 3,843")]:
     ax.text(xh + hw / 2, ym + dy, t, ha="center", va="center", fontsize=6.4, color=INK)
-ax.text(W - 0.08, 0.08, "teal: token mixing (present in a, absent in b; MLP width adjusted to match parameters)  ·  dashed: residual connections  ·  numbers: trainable parameters",
-        ha="right", va="bottom", fontsize=6.1, color=MUTED)
+ax.text(W / 2, 0.2, "teal: token mixing (present in a, absent in b)  ·  blue: token MLP (width adjusted to match parameters)", ha="center", va="bottom", fontsize=6.3, color=MUTED)
+ax.text(W / 2, 0.04, "dashed: residual connections  ·  numbers: trainable parameters", ha="center", va="bottom", fontsize=6.3, color=MUTED)
 fig.savefig("figures/fig_arch.pdf"); fig.savefig("figures/fig_arch.png", dpi=600); plt.close(fig); print("ok", round(xend, 2), round(xh, 2))

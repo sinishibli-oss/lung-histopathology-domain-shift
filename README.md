@@ -2,9 +2,9 @@
 
 Code, data partitions, per-image predictions and summary statistics for the manuscript:
 
-> S. Rahuman, *Beyond the LC25000 benchmark: source-group evaluation, external testing, and a capacity-controlled analysis of lightweight CNN–Transformer models for lung histopathology* (manuscript under review).
+> S. Rahuman and V. Chandrika, *Beyond the LC25000 benchmark: source-group evaluation, external testing, and a capacity-controlled analysis of lightweight CNN–Transformer models for lung histopathology* (manuscript under review).
 >
-> ORCID: [0000-0002-8612-4068](https://orcid.org/0000-0002-8612-4068)
+> ORCID: S. Rahuman [0000-0002-8612-4068](https://orcid.org/0000-0002-8612-4068); V. Chandrika [0009-0006-0958-8674](https://orcid.org/0009-0006-0958-8674)
 
 ## Study design
 
@@ -58,7 +58,7 @@ analysis/
                              patient-bootstrap comparisons, Bonferroni-adjusted Phikon comparisons, ImageNet controls)
   make_result_figures.py     confusion matrices, Protocol A versus B, internal versus external accuracy
   make_extra_figures.py      training curves and external sensitivity analyses (initial seed-42 run)
-  make_study_design.py       study-design figure (run with --tokA)
+  make_study_design.py       study-design figure
   make_architecture.py       architecture figure (hybrid model, TokenMLP, EfficientNetB0 baseline)
   make_graphical_abstract.py graphical abstract
 ```
@@ -87,7 +87,7 @@ pip install -r requirements.txt
 python analysis/reproduce_statistics.py
 python analysis/make_result_figures.py
 python analysis/make_extra_figures.py
-python analysis/make_study_design.py --tokA
+python analysis/make_study_design.py
 python analysis/make_architecture.py
 python analysis/make_graphical_abstract.py
 ```
