@@ -31,12 +31,13 @@ notebooks/
   8_Example_Images_Figure.ipynb                        example-image figure from the original LC25000 and LungHist700 files
   9_Extended_C_Grid.ipynb                              sensitivity check: extended regularisation grid for the frozen-feature classifiers
   10_Saliency_Figure_HighRes.ipynb                     saliency figure at full tile resolution from the initial-run models
+  11_Phikon_v2_Baseline.ipynb                          second pathology foundation model (Phikon-v2) through the identical frozen-feature pipeline
 splits/
   protocolA_seed42 ... protocolA_seed46/{train,val,test}.csv   filename, label, source group
   protocolB_seed42 ... protocolB_seed46/{train,val,test}.csv
   initial_run_seed42/split_{train,val,test}.csv                 initial run, with MD5 hashes
 results/   (stored as protocolA.zip, protocolB.zip, phikon.zip, imagenet_frozen.zip, initial_run_seed42.zip,
-            extended_c_grid.zip, saliency_figure.zip;
+            extended_c_grid.zip, saliency_figure.zip, phikon_v2_results.zip;
             the analysis scripts unpack them automatically on first use)
   protocolA/seed*/<model>/   internal.json, external.json, history.json,
                              test_predictions.csv (per-image internal predictions),
@@ -49,6 +50,7 @@ results/   (stored as protocolA.zip, protocolB.zip, phikon.zip, imagenet_frozen.
                              (Table 8 values come from xai_summary.json; the xai fields inside summary.json
                              are from a preliminary analysis and are superseded)
   extended_c_grid/           notebook 9 output: selected C, validation accuracy per C, internal and external results (30 classifiers)
+  phikon_v2_results/         notebook 11 output: Phikon-v2/protocol{A,B}_seed*.json, *_external_probs.npy, feature_info.json
   saliency_figure/           notebook 10 output: saliency maps of the figure tiles (saliency_maps.npz) and the tiles used
 data/
   lunghist700_index.csv      LungHist700 image list with patient identifiers and label mapping
@@ -56,6 +58,8 @@ analysis/
   reproduce_statistics.py    recomputes the reported metrics and statistical tests (Tables 2-7: leakage, paired
                              protocol changes, source-group-clustered permutation tests with Holm correction,
                              patient-bootstrap comparisons, Bonferroni-adjusted Phikon comparisons, ImageNet controls)
+  phikon_v2_statistics.py    Phikon-v2 baseline (Table 7) and its patient-bootstrap comparisons with the CNN-based models
+                             (Bonferroni-adjusted) and with Phikon
   make_result_figures.py     confusion matrices, Protocol A versus B, internal versus external accuracy
   make_extra_figures.py      training curves and external sensitivity analyses (initial seed-42 run)
   make_study_design.py       study-design figure
@@ -76,6 +80,7 @@ The image datasets are publicly available and are not redistributed here.
 | LC25000-clean grouping | source-tile groups | Batchkala et al.; github.com/GeorgeBatch/LC25000-clean (commit 912f342) | see repository |
 | LungHist700 | external testing | Diosdado et al., 2024, *Scientific Data* 11, 1088 | CC BY 4.0 |
 | Phikon | frozen feature extractor | Hugging Face `owkin/phikon`, revision 057cc0295895c2df3dd7681a89680da6015cbefe | see model card |
+| Phikon-v2 | second frozen feature extractor | Hugging Face `owkin/phikon-v2`, revision 2ae989a9c40cffaa27f0a6cb29cc94d1d6f9a5fd | see model card |
 | ViT-B/16 (ImageNet) | frozen-feature control | Hugging Face `google/vit-base-patch16-224`, revision 3f49326eb077187dfe1c2a2bb15fbd74e6ab91e3 | see model card |
 
 ## Reproducing the analysis
@@ -85,6 +90,7 @@ All reported statistics and the result figures can be recomputed from the stored
 ```
 pip install -r requirements.txt
 python analysis/reproduce_statistics.py
+python analysis/phikon_v2_statistics.py
 python analysis/make_result_figures.py
 python analysis/make_extra_figures.py
 python analysis/make_study_design.py

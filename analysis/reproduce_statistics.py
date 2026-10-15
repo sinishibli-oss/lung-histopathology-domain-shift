@@ -99,7 +99,7 @@ for name, I, E, base in [("Protocol A", IA, EA, "results/protocolA"), ("Protocol
     ties = [[m for m in M4 if abs(I[s, m]["accuracy"] - max(I[s, x]["accuracy"] for x in M4)) < 1e-12] for s in S]
     print(f"  {name} top model(s) per seed: {ties}")
     for a, b in [(M4[2], M4[0]), (M4[2], M4[1]), (M4[1], M4[0]), (M4[2], M4[3]), (M4[3], M4[1])]:
-        out = []
+        out, raw = [], []
         for s in S:
             fa = pd.read_csv(f"{base}/seed{s}/{a}/external_predictions.csv"); fb = pd.read_csv(f"{base}/seed{s}/{b}/external_predictions.csv")
             ca = (fa.y_pred == fa.y_true).values.astype(float); cb = (fb.y_pred == fb.y_true).values.astype(float); pat = fa.patient_id.values
@@ -107,7 +107,8 @@ for name, I, E, base in [("Protocol A", IA, EA, "results/protocolA"), ("Protocol
             for _ in range(2000):
                 ss = np.concatenate([idx[k] for k in rng.choice(u, len(u))]); bs.append(ca[ss].mean() - cb[ss].mean())
             out.append((round(100 * (ca.mean() - cb.mean()), 1), round(100 * np.percentile(bs, 2.5), 1), round(100 * np.percentile(bs, 97.5), 1)))
-        d = [o[0] for o in out]
+            raw.append(100 * (ca.mean() - cb.mean()))
+        d = raw                                  # mean and SD from unrounded differences (as in the manuscript)
         print(f"    {a} - {b} external: {np.mean(d):+.1f} ± {np.std(d, ddof=1):.1f} pp; CIs excluding zero: {sum(1 for o in out if o[1] > 0 or o[2] < 0)}/5 {out}")
 
 print("\n== Phikon frozen-feature baseline (Table 7)")
