@@ -98,7 +98,7 @@ To retrain, open the notebooks in Google Colab or Kaggle. Notebooks 4–7 downlo
 
 ## Trained weights
 
-Trained weights for all networks are not yet included; they will be attached to a GitHub release of this repository and archived at Zenodo before publication.
+Trained weights of all 40 fine-tuned networks (Protocols A and B, seeds 42–46) and of the three initial-run models, with SHA-256 checksums and a snapshot of this repository, are archived at Zenodo: https://doi.org/10.5281/zenodo.23323264
 
 ## Citation
 
